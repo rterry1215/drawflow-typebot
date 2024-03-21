@@ -15,6 +15,25 @@ body {
   font-family: 'Roboto', sans-serif;
 }
 
+.chakra-icon {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  line-height: 1em;
+  flex-shrink: 0;
+  vertical-align: middle;
+  fill: none;
+  stroke: currentcolor;
+}
+
+.color-0042DA {
+  color: #0042DA;
+}
+
+.color-e67200 {
+  color: #e67200;
+}
+
 header {
   height: 66px;
   border-bottom: 1px solid var(--border-color);
@@ -57,7 +76,7 @@ header a {
 
 .col {
   overflow: auto;
-  width: 300px;
+  width: 400px;
   border-right: 1px solid var(--border-color);
   margin: 8px;
   padding: 8px;
@@ -65,12 +84,17 @@ header a {
   border-radius: 10px;
 }
 
+.toolbar-header {
+  font-weight: 500;
+  padding-left: 8px;
+}
+
 .drag-drawflow {
   cursor: move;
   user-select: none;
   border-radius: 10px;
-  border: solid 1px gray;
-  background-color: lightgray;
+  border: solid 1px rgba(128, 128, 128, 0.2);
+  background-color: rgba(211, 211, 211, 0.2);
   padding: 8px;
   margin: 4px;
 }
@@ -222,18 +246,16 @@ header a {
   -webkit-box-shadow: 0 2px 15px 2px var(--border-color);
   box-shadow: 0 2px 15px 2px var(--border-color);
   padding: 0px;
-  width: 200px;
+  width: 250px;
+  border-radius: 10px;
 }
 
 .drawflow .drawflow-node.selected {
   background: white;
-  border: 1px solid #4ea9ff;
-  -webkit-box-shadow: 0 2px 20px 2px #4ea9ff;
-  box-shadow: 0 2px 20px 2px #4ea9ff;
 }
 
 .drawflow .drawflow-node.selected .title-box {
-  color: #22598c;
+  color: #e0e7ee;
   /*border-bottom: 1px solid #4ea9ff;*/
 }
 
@@ -280,11 +302,10 @@ header a {
 }
 
 .drawflow-node .title-box {
-  height: 50px;
+  margin-top: 4px;
   line-height: 50px;
-  background: var(--background-box-title);
-  border-bottom: 1px solid #e9e9e9;
-  border-radius: 4px 4px 0px 0px;
+  background: #ffffff;
+  border-radius: 15px;
   padding-left: 10px;
 }
 
@@ -293,7 +314,7 @@ header a {
 }
 
 .drawflow-node .box {
-  padding: 10px 20px 20px 20px;
+  padding: 5px 20px 5px 10px;
   font-size: 14px;
   color: #555555;
 
@@ -309,7 +330,7 @@ header a {
 }
 
 .drawflow-node.slack .title-box {
-  border-radius: 4px;
+  border-radius: 15px;
 }
 
 .drawflow-node input,
@@ -329,13 +350,18 @@ header a {
 }
 
 
-.drawflow-node.personalized {
-  background: red;
-  height: 200px;
+.drawflow-node.start {
+  background: white;
+  height: 30px;
   text-align: center;
-  color: white;
+  border-radius: 10px;
+  color: rgb(44, 15, 15);
 }
-
+.title-name {
+  text-align:left;
+  padding:8px;
+  margin-top: -80px;
+}
 .drawflow-node.personalized .input {
   background: yellow;
 }
@@ -345,7 +371,7 @@ header a {
 }
 
 .drawflow-node.personalized.selected {
-  background: blue;
+  background: #ffffff;
 }
 
 .drawflow .connection .point {
@@ -354,13 +380,31 @@ header a {
   fill: white;
 
 }
-
+.node-text{
+  border-radius: 50px;
+}
 .drawflow .connection .point.selected,
 .drawflow .connection .point:hover {
   fill: #4ea9ff;
 }
 
-
+.css-1tedhhx {
+  display: flex;
+  flex-direction: column;
+  gap: var(--chakra-space-2);
+  padding: var(--chakra-space-4);
+  border-radius: var(--chakra-radii-xl);
+  background: var(--chakra-colors-white);
+  border-width: 1px;
+  border-color: var(--chakra-colors-white);
+  width: 300px;
+  transition: border 300ms ease 0s, box-shadow 200ms ease 0s;
+  position: absolute;
+  cursor: pointer;
+  box-shadow: var(--chakra-shadows-md);
+  z-index: 1;
+  pointer-events: auto;
+}
 /* Modal */
 .modal {
   display: none;
@@ -400,4 +444,49 @@ header a {
   .modal-content {
     width: 80%;
   }
+}
+
+.dragdrop-node{
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.justify-center{
+  justify-content: center;
+}
+
+.align-center{
+  align-items: center;
+}
+
+.inner-dragdrop-node{
+  background-color: rgba(211, 211, 211, 0.2);
+  border: rgba(128, 128, 128, 1);
+  border-radius: 10px;
+  display: flex;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.title-box{
+  font-weight: 500;
+}
+
+.drawflow_content_node input{
+  width: 100%;
+  padding: 4px;
+}
+
+.icon-box{
+  padding-left: 8px;
+  padding-right: 8px;
+}
+
+.input-group input{
+  border: none;
+  background-color: transparent;
+}
+
+.input-group .icon-box{
+  margin-top: -20px;
 }

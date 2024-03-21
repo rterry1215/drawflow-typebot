@@ -46,9 +46,21 @@
               class="drag-drawflow"
               draggable="true"
               ondragstart="drag(event)"
-              data-node="pers onalized"
+              data-node="text-bubble"
             >
-              <i class="fas fa-fill"></i><span> Text</span>
+              <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon color-0042DA"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+              <span> Text</span>
             </div>
           </div>
         </div>
@@ -59,9 +71,21 @@
               class="drag-drawflow"
               draggable="true"
               ondragstart="drag(event)"
-              data-node="personalized"
+              data-node="text-input"
             >
-              <i class="fas fa-fill"></i><span> Text</span>
+              <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon color-e67200"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                <line x1="9" y1="20" x2="15" y2="20"></line>
+                <line x1="12" y1="4" x2="12" y2="20"></line>
+              </svg>
+              <span> Text</span>
             </div>
           </div>
           <div class="w-50">
@@ -69,9 +93,22 @@
               class="drag-drawflow"
               draggable="true"
               ondragstart="drag(event)"
-              data-node="personalized"
+              data-node="button-input"
             >
-              <i class="fas fa-fill"></i><span> Text</span>
+              <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon color-e67200"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="9 11 12 14 22 4"></polyline>
+                <path
+                  d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                ></path>
+              </svg>
+              <span> Button</span>
             </div>
           </div>
         </div>
@@ -82,12 +119,26 @@
               class="drag-drawflow"
               draggable="true"
               ondragstart="drag(event)"
-              data-node="personalized"
+              data-node="http-request-integration"
             >
-              <i class="fas fa-fill"></i><span> Text</span>
+              <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon
+                  points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                ></polygon>
+              </svg>
+              <span> HTTP request</span>
             </div>
           </div>
         </div>
+
+        <div></div>
       </div>
       <div class="col-right">
         <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
@@ -125,6 +176,7 @@
     </div>
 
     <script>
+      let groupNumber = 1;
       var id = document.getElementById("drawflow");
       const editor = new Drawflow(id);
       editor.reroute = true;
@@ -134,22 +186,22 @@
             data: {
               1: {
                 id: 1,
-                name: "personalized",
+                name: "start",
                 data: {},
-                class: "personalized",
-                html: "Personalized",
+                class: "start",
+                html: "Start",
                 typenode: false,
                 inputs: {
-                  input_1: {
-                    connections: [],
-                  },
+                  // input_1: {
+                  //   connections: [],
+                  // },
                 },
                 outputs: {
                   output_1: {
                     connections: [],
                   },
                 },
-                pos_x: 326,
+                pos_x: 32,
                 pos_y: 156,
               },
             },
@@ -288,21 +340,165 @@
               (editor.precanvas.clientHeight * editor.zoom));
 
         switch (name) {
-          case "personalized":
-            var personalized = `
-            <div>
-              Personalized
-            </div>
+          case "text-bubble":
+            var textbutton = `<div class="text-bubble">
+            <div class="dragdrop-node">
+            <div class="title-box">Group #${groupNumber++}</div>
+            <div class="row justify-center">
+                <div class="inner-dragdrop-node align-center input-group">
+                  <div class="icon-box">
+                    <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon color-0042DA"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                ></path>
+              </svg>
+                  </div>
+                  <div class="box">
+                    <input type="text" df-title placeholder="" />
+                  </div>
+                </div>
+              </div>
+          </div></div>
             `;
             editor.addNode(
-              "personalized",
+              "text-bubble",
               1,
               1,
               pos_x,
               pos_y,
-              "personalized",
+              "text-bubble",
               {},
-              personalized
+              textbutton
+            );
+            break;
+          case "text-input":
+            var textinput = `<div class="text-input">
+            <div class="dragdrop-node">
+            <div class="title-box">Group #${groupNumber++}</div><div class="row justify-center">
+                <div class="inner-dragdrop-node align-center input-group">
+                  <div class="icon-box">
+                    <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon color-e67200"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polyline points="4 7 4 4 20 4 20 7"></polyline>
+                <line x1="9" y1="20" x2="15" y2="20"></line>
+                <line x1="12" y1="4" x2="12" y2="20"></line>
+              </svg>
+                  </div>
+                  <div class="box">
+                    <input type="text" df-title placeholder="Type your answer" />
+                  </div>
+                </div>
+              </div>
+          </div></div>
+            `;
+            editor.addNode(
+              "text-input",
+              1,
+              1,
+              pos_x,
+              pos_y,
+              "text-input",
+              {},
+              textinput
+            );
+            break;
+          case "button-input":
+            var buttoninput = `<div class="button-input">
+            <div class="dragdrop-node">
+            <div class="title-box">Group #${groupNumber++}</div>
+            <div class="row justify-center">
+              <div class="inner-dragdrop-node">
+                <div class="icon-box">
+                  <svg
+                    viewBox="0 0 24 24"
+                    focusable="false"
+                    class="chakra-icon color-e67200"
+                    stroke-width="2px"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <polyline points="9 11 12 14 22 4"></polyline>
+                    <path
+                      d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"
+                    ></path>
+                  </svg>
+                </div>
+                <div>
+                  <div class="box">
+                    <input type="text" df-title placeholder="Click to edit" />
+                  </div>
+                  <div class="box">
+                    <input
+                      type="text"
+                      df-action
+                      disabled
+                      placeholder="Default"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div></div>
+            `;
+            editor.addNode(
+              "button-input",
+              1,
+              2,
+              pos_x,
+              pos_y,
+              "button-input",
+              {},
+              buttoninput
+            );
+            break;
+          case "http-request-integration":
+            var httprequest = `<div class="http-request-integration">
+            <div class="dragdrop-node">
+            <div class="title-box">Group #${groupNumber++}</div><div class="row justify-center">
+                <div class="inner-dragdrop-node align-center input-group">
+                  <div class="icon-box">
+                    <svg
+                viewBox="0 0 24 24"
+                focusable="false"
+                class="chakra-icon"
+                stroke-width="2px"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <polygon
+                  points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"
+                ></polygon>
+              </svg>
+                  </div>
+                  <div class="box">
+                    <input type="text" df-title placeholder="Configure" />
+                  </div>
+                </div>
+              </div>
+          </div></div>
+            `;
+            editor.addNode(
+              "http-request-integration",
+              1,
+              1,
+              pos_x,
+              pos_y,
+              "http-request-integration",
+              {},
+              httprequest
             );
             break;
           default:
