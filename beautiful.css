@@ -357,11 +357,13 @@ header a {
   border-radius: 10px;
   color: rgb(44, 15, 15);
 }
+
 .title-name {
-  text-align:left;
-  padding:8px;
+  text-align: left;
+  padding: 8px;
   margin-top: -80px;
 }
+
 .drawflow-node.personalized .input {
   background: yellow;
 }
@@ -380,9 +382,11 @@ header a {
   fill: white;
 
 }
-.node-text{
+
+.node-text {
   border-radius: 50px;
 }
+
 .drawflow .connection .point.selected,
 .drawflow .connection .point:hover {
   fill: #4ea9ff;
@@ -405,6 +409,7 @@ header a {
   z-index: 1;
   pointer-events: auto;
 }
+
 /* Modal */
 .modal {
   display: none;
@@ -446,20 +451,24 @@ header a {
   }
 }
 
-.dragdrop-node{
+.dragdrop-node {
   border-radius: 10px;
   padding: 8px;
 }
 
-.justify-center{
+.justify-center {
   justify-content: center;
 }
 
-.align-center{
+.align-center {
   align-items: center;
 }
 
-.inner-dragdrop-node{
+.justify-right {
+  justify-content: end;
+}
+
+.inner-dragdrop-node {
   background-color: rgba(211, 211, 211, 0.2);
   border: rgba(128, 128, 128, 1);
   border-radius: 10px;
@@ -468,25 +477,39 @@ header a {
   padding-bottom: 12px;
 }
 
-.title-box{
+.title-box {
   font-weight: 500;
 }
 
-.drawflow_content_node input{
+.drawflow_content_node input {
   width: 100%;
   padding: 4px;
 }
 
-.icon-box{
+.icon-box {
   padding-left: 8px;
   padding-right: 8px;
 }
 
-.input-group input{
+.input-group input {
   border: none;
   background-color: transparent;
 }
 
-.input-group .icon-box{
+.input-group .icon-box {
   margin-top: -20px;
+}
+
+.lock-sidebar {
+  border: rgba(128, 128, 128, 1);
+  background-color: rgba(211, 211, 211, 0.5);
+  padding: 8px;
+  border-radius: 4px;
+  transition: all ease 0.3s;
+}
+
+.lock-sidebar:hover {
+  cursor: pointer;
+  background-color: rgba(211, 211, 211, 0.8);
+
 }
