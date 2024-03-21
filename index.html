@@ -163,26 +163,23 @@
           >
             Export
           </div>
-          <div class="btn-clear" onclick="editor.clearModuleSelected()">
-            Clear
-          </div>
+          <div class="btn-clear" onclick="clearGround()">Clear</div>
           <div class="btn-lock">
-            <i
-              id="lock"
-              class="fas fa-lock"
-              onclick="editor.editor_mode='fixed'; changeMode('lock');"
-            ></i>
-            <i
-              id="unlock"
-              class="fas fa-lock-open"
-              onclick="editor.editor_mode='edit'; changeMode('unlock');"
-              style="display: none"
-            ></i>
+            <button onclick="changeMode()">
+              <i id="lock" class="fas fa-lock"></i>
+              <i id="unlock" class="fas fa-lock-open" style="display: none"></i>
+            </button>
           </div>
           <div class="bar-zoom">
-            <i class="fas fa-search-minus" onclick="editor.zoom_out()"></i>
-            <i class="fas fa-search" onclick="editor.zoom_reset()"></i>
-            <i class="fas fa-search-plus" onclick="editor.zoom_in()"></i>
+            <button onclick="editor.zoom_out()">
+              <i class="fas fa-search-minus"></i>
+            </button>
+            <button onclick="editor.zoom_reset()">
+              <i class="fas fa-search"></i>
+            </button>
+            <button onclick="editor.zoom_in()">
+              <i class="fas fa-search-plus"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -555,15 +552,23 @@
         event.target.classList.add("selected");
       }
 
-      function changeMode(option) {
-        //console.log(lock.id);
-        if (option == "lock") {
-          lock.style.display = "none";
-          unlock.style.display = "block";
-        } else {
+      function changeMode() {
+        console.log(editor.editor_mode)
+        if (editor.editor_mode == "fixed") {
+          editor.editor_mode = "edit";
           lock.style.display = "block";
           unlock.style.display = "none";
+        } else {
+          editor.editor_mode = "fixed";
+          lock.style.display = "none";
+          unlock.style.display = "block";
         }
+      }
+
+      function clearGround() {
+        editor.clearModuleSelected();
+        groupNumber = 1;
+        editor.addNode("start", 0, 1, 32, 156, "start", {}, "Start");
       }
     </script>
   </body>
