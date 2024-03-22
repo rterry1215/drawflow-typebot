@@ -199,6 +199,8 @@
       const editor = new Drawflow(id);
       editor.reroute = true;
       editor.useuuid = true;
+      editor.force_first_input = true;
+      editor.draggable_inputs = false;
       const dataToImport = {
         drawflow: {
           Home: {
@@ -208,7 +210,18 @@
                 name: "start",
                 data: {},
                 class: "start",
-                html: "Start",
+                html: `<div class="start-node"><span><svg
+                    viewBox="0 0 24 24"
+                    focusable="false"
+                    class="chakra-icon"
+                    stroke-width="2px"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+                    <line x1="4" y1="22" x2="4" y2="15"></line>
+                  </svg></span>
+                  <span style="margin-left:32px;">Start</span><div>`,
                 typenode: false,
                 inputs: {
                   // input_1: {
@@ -315,11 +328,16 @@
             .getAttribute("data-node");
         } else {
           ev.dataTransfer.setData("node", ev.target.getAttribute("data-node"));
+          if (ev.target.classList.contains("child-node")) {
+            ev.dataTransfer.setData("node-id", ev.target.id);
+            ev.dataTransfer.setData("node-type", "child");
+          } else {
+            ev.dataTransfer.setData("node-type", "parent");
+          }
         }
       }
 
       function drop(ev) {
-        console.log(ev);
         if (ev.type === "touchend") {
           var parentdrawflow = document
             .elementFromPoint(
@@ -337,12 +355,56 @@
           mobile_item_selec = "";
         } else {
           ev.preventDefault();
+          let target = null;
+
+          if (!ev.target.classList.contains("drawflow"))
+            target = ev.target.closest(".parent-node");
+
+          var type = ev.dataTransfer.getData("node-type");
           var data = ev.dataTransfer.getData("node");
-          addNodeToDrawFlow(data, ev.clientX, ev.clientY);
+          if (type === "child") {
+            var elementId = ev.dataTransfer.getData("node-id");
+            var element = document.getElementById(elementId);
+            var parent = element.closest(".parent-node");
+            var children = parent.querySelectorAll(".child-node");
+            if (children.length === 1) {
+              parent.remove();
+            }
+            var html = element.outerHTML;
+            element.remove();
+            addNodeToTargetDrawFlow(data, ev.clientX, ev.clientY, html, target);
+          } else if (type === "parent") {
+            addNodeToDrawFlow(data, ev.clientX, ev.clientY, target);
+          }
         }
       }
 
-      function addNodeToDrawFlow(name, pos_x, pos_y) {
+      function addNodeToTargetDrawFlow(name, pos_x, pos_y, html, target) {
+        const parser = new DOMParser();
+        if (target) {
+          target
+            .querySelector(".drawflow_content_node")
+            .appendChild(
+              parser.parseFromString(html, "text/html").body.firstChild
+            );
+        } else {
+          editor.addNode(
+            "group-node",
+            1,
+            1,
+            pos_x,
+            pos_y,
+            "group-node",
+            {},
+            makeGroup(html)
+          );
+        }
+      }
+
+      function addNodeToDrawFlow(name, pos_x, pos_y, target = null) {
+        if (target) {
+          console.log(target);
+        }
         if (editor.editor_mode === "fixed") {
           return false;
         }
@@ -361,71 +423,56 @@
             (editor.precanvas.clientHeight /
               (editor.precanvas.clientHeight * editor.zoom));
 
+        const parser = new DOMParser();
+
         switch (name) {
           case "text-bubble":
-            var textbutton = `<div class="text-bubble">
-            <div class="dragdrop-node">
-            <div class="title-box">Group #${groupNumber++}</div>
-            <div class="row justify-center">
-                <div class="inner-dragdrop-node align-center input-group">
-                  <div class="icon-box">
-                    <svg
-                viewBox="0 0 24 24"
-                focusable="false"
-                class="chakra-icon color-0042DA"
-                stroke-width="2px"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path
-                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
-                ></path>
-              </svg>
-                  </div>
-                  <div class="box">
-                    <input type="text" df-title placeholder="" />
-                  </div>
+            var textbutton = `<div class="child-node text-bubble"
+               onclick="console.log('A')"
+               data-node="text-bubble" draggable="true" ondragstart="drag(event)"
+               id="child-${generateRandomString(32)}">
+              <div class="d-flex align-center input-group">
+                <div class="icon-box">
+                  <svg
+                    viewBox="0 0 24 24"
+                    focusable="false"
+                    class="chakra-icon color-0042DA"
+                    stroke-width="2px"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                    ></path>
+                  </svg>
+                </div>
+                <div class="box">
+                  <input type="text" df-title placeholder="" />
                 </div>
               </div>
-          </div></div>
-            `;
-            editor.addNode(
-              "text-bubble",
-              1,
-              1,
-              pos_x,
-              pos_y,
-              "text-bubble",
-              {},
-              textbutton
-            );
+            </div>`;
+            if (target) {
+              target
+                .querySelector(".drawflow_content_node")
+                .appendChild(
+                  parser.parseFromString(textbutton, "text/html").body
+                    .firstChild
+                );
+            } else {
+              editor.addNode(
+                "group-node",
+                1,
+                1,
+                pos_x,
+                pos_y,
+                "group-node",
+                {},
+                makeGroup(textbutton)
+              );
+            }
             break;
           case "text-input":
-            var textinput = `<div class="text-input">
-            <div class="dragdrop-node">
-            <div class="title-box">Group #${groupNumber++}</div><div class="row justify-center">
-                <div class="inner-dragdrop-node align-center input-group">
-                  <div class="icon-box">
-                    <svg
-                viewBox="0 0 24 24"
-                focusable="false"
-                class="chakra-icon color-e67200"
-                stroke-width="2px"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <polyline points="4 7 4 4 20 4 20 7"></polyline>
-                <line x1="9" y1="20" x2="15" y2="20"></line>
-                <line x1="12" y1="4" x2="12" y2="20"></line>
-              </svg>
-                  </div>
-                  <div class="box">
-                    <input type="text" df-title placeholder="Type your answer" />
-                  </div>
-                </div>
-              </div>
-          </div></div>
-            `;
+            var textinput = ``;
             editor.addNode(
               "text-input",
               1,
@@ -580,7 +627,28 @@
       function clearGround() {
         editor.clearModuleSelected();
         groupNumber = 1;
-        editor.addNode("start", 0, 1, 32, 156, "start", {}, "Start");
+        editor.addNode(
+          "start",
+          0,
+          1,
+          window.innerWidth > 500 ? 400 : 200,
+          156,
+          "start",
+          {},
+          `<div class="start-node"><span><svg
+              viewBox="0 0 24 24"
+              focusable="false"
+              class="chakra-icon"
+              stroke-width="2px"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
+              <line x1="4" y1="22" x2="4" y2="15"></line>
+            </svg></span>
+            <span style="margin-left:32px;">Start</span>
+          <div>`
+        );
       }
 
       function exportWithModal() {
@@ -618,6 +686,24 @@
         const svgElements = event.querySelectorAll("svg");
         svgElements[0].classList.toggle("d-none");
         svgElements[1].classList.toggle("d-none");
+      }
+
+      function makeGroup(child) {
+        return `<div class="title-box"><input type="text" value="Group #${groupNumber++}" df-group /></div>${child}`;
+      }
+
+      function generateRandomString(length) {
+        const characters =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        let randomString = "";
+
+        for (let i = 0; i < length; i++) {
+          const randomIndex =
+            Math.floor(new Date() * Math.random()) % characters.length;
+          randomString += characters[randomIndex];
+        }
+
+        return randomString;
       }
     </script>
   </body>
