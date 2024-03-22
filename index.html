@@ -33,15 +33,21 @@
     <script src="https://unpkg.com/micromodal/dist/micromodal.min.js"></script>
     <link rel="stylesheet" type="text/css" href="beautiful.css" />
   </head>
+
   <body>
     <div class="wrapper">
-      <div class="col">
+      <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
+        <div class="btn-awesome btn-export" onclick="exportWithModal()">
+          Export
+        </div>
+      </div>
+      <div class="toolbar-panel" id="toolbar-panel">
         <div class="row justify-right">
-          <button class="lock-sidebar">
+          <button class="lock-sidebar" onclick="handleShowHideSidebar(this)">
             <svg
               viewBox="0 0 24 24"
               focusable="false"
-              class="chakra-icon css-1k8v1e7"
+              class="chakra-icon"
               stroke-width="2px"
               stroke-linecap="round"
               stroke-linejoin="round"
@@ -49,6 +55,18 @@
             >
               <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
               <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+            </svg>
+            <svg
+              viewBox="0 0 24 24"
+              focusable="false"
+              class="chakra-icon d-none"
+              stroke-width="2px"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+              <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
             </svg>
           </button>
         </div>
@@ -150,38 +168,28 @@
             </div>
           </div>
         </div>
-
-        <div></div>
       </div>
-      <div class="col-right">
-        <div id="drawflow" ondrop="drop(event)" ondragover="allowDrop(event)">
-          <div
-            class="btn-export"
-            onclick="Swal.fire({ title: 'Export',
-        html: '<pre><code>'+JSON.stringify(editor.export(), null,4)+'</code></pre>'
-        })"
-          >
-            Export
-          </div>
-          <div class="btn-clear" onclick="clearGround()">Clear</div>
-          <div class="btn-lock">
-            <button onclick="changeMode()">
-              <i id="lock" class="fas fa-lock"></i>
-              <i id="unlock" class="fas fa-lock-open" style="display: none"></i>
-            </button>
-          </div>
-          <div class="bar-zoom">
-            <button onclick="editor.zoom_out()">
-              <i class="fas fa-search-minus"></i>
-            </button>
-            <button onclick="editor.zoom_reset()">
-              <i class="fas fa-search"></i>
-            </button>
-            <button onclick="editor.zoom_in()">
-              <i class="fas fa-search-plus"></i>
-            </button>
-          </div>
-        </div>
+    </div>
+
+    <div>
+      <div class="btn-awesome btn-clear" onclick="clearGround()">Clear</div>
+      <div class="btn-awesome btn-save" onclick="clearGround()">Save</div>
+      <div class="btn-lock">
+        <button onclick="changeMode()">
+          <i id="lock" class="fas fa-lock"></i>
+          <i id="unlock" class="fas fa-lock-open" style="display: none"></i>
+        </button>
+      </div>
+      <div class="bar-zoom">
+        <button onclick="editor.zoom_out()">
+          <i class="fas fa-search-minus"></i>
+        </button>
+        <button onclick="editor.zoom_reset()">
+          <i class="fas fa-search"></i>
+        </button>
+        <button onclick="editor.zoom_in()">
+          <i class="fas fa-search-plus"></i>
+        </button>
       </div>
     </div>
 
@@ -190,6 +198,7 @@
       var id = document.getElementById("drawflow");
       const editor = new Drawflow(id);
       editor.reroute = true;
+      editor.useuuid = true;
       const dataToImport = {
         drawflow: {
           Home: {
@@ -211,7 +220,7 @@
                     connections: [],
                   },
                 },
-                pos_x: 32,
+                pos_x: window.innerWidth > 500 ? 400 : 200,
                 pos_y: 156,
               },
             },
@@ -220,6 +229,8 @@
       };
       editor.start();
       editor.import(dataToImport);
+
+      console.log(editor);
 
       // Events!
       editor.on("nodeCreated", function (id) {
@@ -308,6 +319,7 @@
       }
 
       function drop(ev) {
+        console.log(ev);
         if (ev.type === "touchend") {
           var parentdrawflow = document
             .elementFromPoint(
@@ -553,7 +565,7 @@
       }
 
       function changeMode() {
-        console.log(editor.editor_mode)
+        console.log(editor.editor_mode);
         if (editor.editor_mode == "fixed") {
           editor.editor_mode = "edit";
           lock.style.display = "block";
@@ -569,6 +581,43 @@
         editor.clearModuleSelected();
         groupNumber = 1;
         editor.addNode("start", 0, 1, 32, 156, "start", {}, "Start");
+      }
+
+      function exportWithModal() {
+        // Get the JSON code
+        const jsonData = JSON.stringify(editor.export(), null, 4);
+
+        // Create a modal with the JSON code and a download button
+        Swal.fire({
+          title: "Exported JSON Data",
+          html: `<textarea class="json-export-text" rows="24">${jsonData}</textarea>`,
+          showCloseButton: true,
+          showCancelButton: true,
+          cancelButtonText: "Close",
+          confirmButtonText: "Download",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Trigger the download
+            const blob = new Blob([jsonData], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "exported-data.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          }
+        });
+      }
+
+      function handleShowHideSidebar(event) {
+        document
+          .getElementById("toolbar-panel")
+          .classList.toggle("toolbar-panel-collapse");
+        const svgElements = event.querySelectorAll("svg");
+        svgElements[0].classList.toggle("d-none");
+        svgElements[1].classList.toggle("d-none");
       }
     </script>
   </body>

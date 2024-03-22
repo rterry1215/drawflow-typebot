@@ -12,7 +12,21 @@ body {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
+}
+
+button {
+  color: rgb(105, 105, 105);
+}
+
+.d-none {
+  display: none !important;
+}
+.d-block {
+  display: block !important;
+}
+.d-flex {
+  display: flex !important;
 }
 
 .chakra-icon {
@@ -27,7 +41,7 @@ body {
 }
 
 .color-0042DA {
-  color: #0042DA;
+  color: #0042da;
 }
 
 .color-e67200 {
@@ -74,14 +88,58 @@ header a {
   display: flex;
 }
 
-.col {
+.toolbar-panel {
+  position: absolute;
+  z-index: 9;
+  top: 12px;
+  left: 12px;
   overflow: auto;
-  width: 400px;
-  border-right: 1px solid var(--border-color);
-  margin: 8px;
-  padding: 8px;
+  width: 300px;
+  height: calc(100vh - 56px);
+  background-color: white;
   border: solid 1px lightgray;
+  border-right: 1px solid var(--border-color);
   border-radius: 10px;
+  padding: 12px;
+  box-shadow: 1px 1px 5px rgba(128, 128, 128, 0.7);
+  transition: all ease 0.5s;
+}
+
+.toolbar-panel * {
+  word-wrap: break-word;
+}
+.toolbar-panel p,
+.toolbar-panel span {
+  padding-top: 4px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.toolbar-panel-collapse {
+  width: 60px;
+}
+
+.toolbar-panel-collapse .row {
+  justify-content: center;
+  align-items: center;
+}
+
+.toolbar-panel-collapse p {
+  border-top: solid rgba(128, 128, 128, 0.7) 1px;
+  padding-left: 0;
+}
+
+.toolbar-panel-collapse .drag-drawflow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  padding: auto;
+}
+
+.toolbar-panel-collapse .w-50 {
+  width: 100%;
+  max-width: 100%;
 }
 
 .toolbar-header {
@@ -90,13 +148,19 @@ header a {
 }
 
 .drag-drawflow {
-  cursor: move;
+  cursor: grab;
   user-select: none;
   border-radius: 10px;
   border: solid 1px rgba(128, 128, 128, 0.2);
   background-color: rgba(211, 211, 211, 0.2);
   padding: 8px;
   margin: 4px;
+  transition: all ease 0.2s;
+}
+
+.drag-drawflow:hover {
+  background-color: rgba(211, 211, 211, 0.3);
+  box-shadow: 0px 3px 5px rgba(128, 128, 128, 0.2);
 }
 
 .row {
@@ -137,34 +201,45 @@ header a {
   font-weight: bold;
 }
 
-.btn-export {
-  float: right;
+.btn-clear {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  color: white;
-  font-weight: bold;
-  border: 1px solid #0e5ba3;
-  background: #4ea9ff;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
   z-index: 5;
+  top: 10px;
+  right: 190px;
+  width: 60px;
 }
 
-.btn-clear {
-  float: right;
+.btn-export {
   position: absolute;
   top: 10px;
-  right: 85px;
-  color: white;
-  font-weight: bold;
-  border: 1px solid #96015b;
-  background: #e3195a;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
+  right: 115px;
   z-index: 5;
+  width: 60px;
+}
+
+.btn-save {
+  position: absolute;
+  z-index: 5;
+  top: 10px;
+  right: 40px;
+  width: 60px;
+}
+
+.btn-awesome {
+  color: rgb(105, 105, 105);
+  font-weight: bold;
+  background: #e1e6eb;
+  padding: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 1px 1px 10px rgba(128, 128, 128, 0.7);
+  background-color: rgba(128, 128, 128, 0);
+  transition: all ease 0.3s;
+  text-align: center;
+}
+
+.btn-awesome:hover {
+  background-color: rgba(211, 211, 211, 0.8);
 }
 
 .swal-wide {
@@ -215,36 +290,25 @@ header a {
 } */
 
 .bar-zoom button:hover,
-.btn-lock button:hover{
+.btn-lock button:hover {
   background-color: rgba(211, 211, 211, 0.8);
 }
 
 #drawflow {
   position: relative;
-  width: calc(100vw - 301px);
+  width: calc(100vw);
   height: calc(100%);
   background: var(--background-color);
-  background-size: 25px 25px;
-  background-image:
+  background-size: 40px 40px;
+  /* background-image:
     linear-gradient(to right, #f1f1f1 1px, transparent 1px),
-    linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
+    linear-gradient(to bottom, #f1f1f1 1px, transparent 1px); */
+  background-color: #f4f5f8;
+  background-image: radial-gradient(#c6d0e1 1px, transparent 0);
 }
 
 @media only screen and (max-width: 768px) {
-  .col {
-    width: 50px;
-  }
-
-  .col .drag-drawflow span {
-    display: none;
-  }
-
-  #drawflow {
-    width: calc(100vw - 51px);
-  }
 }
-
-
 
 /* Editing Drawflow */
 
@@ -256,6 +320,12 @@ header a {
   padding: 0px;
   width: 250px;
   border-radius: 10px;
+  transition: box-shadow ease 0.2s;
+}
+
+.drawflow .drawflow-node:hover {
+  box-shadow: 1px 1px 10px rgba(128, 128, 128, 0.7);
+  cursor: pointer;
 }
 
 .drawflow .drawflow-node.selected {
@@ -293,7 +363,7 @@ header a {
   background: white;
 }
 
-.drawflow>.drawflow-delete {
+.drawflow > .drawflow-delete {
   border: 2px solid #43b993;
   background: white;
   color: #43b993;
@@ -325,7 +395,6 @@ header a {
   padding: 5px 20px 5px 10px;
   font-size: 14px;
   color: #555555;
-
 }
 
 .drawflow-node .box p {
@@ -357,7 +426,6 @@ header a {
   height: 100px;
 }
 
-
 .drawflow-node.start {
   background: white;
   height: 30px;
@@ -388,7 +456,6 @@ header a {
   stroke: var(--border-color);
   stroke-width: 2;
   fill: white;
-
 }
 
 .node-text {
@@ -430,7 +497,6 @@ header a {
   overflow: auto;
   background-color: rgb(0, 0, 0);
   background-color: rgba(0, 0, 0, 0.7);
-
 }
 
 .modal-content {
@@ -519,5 +585,10 @@ header a {
 .lock-sidebar:hover {
   cursor: pointer;
   background-color: rgba(211, 211, 211, 0.8);
+}
 
+.json-export-text {
+  width: 100%;
+  border-radius: 5px;
+  border: solid 1px rgba(211, 211, 211, 0.8);
 }
